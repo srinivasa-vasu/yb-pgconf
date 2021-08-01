@@ -1,0 +1,30 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  flyway:
+    baseline-on-migrate: true
+    mixed: true
+  jpa:
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5433/todo
+    username: todo
+    password: todo
+
+springdoc:
+  api-docs:
+    path: "/openapi"
+    resolve-schema-properties: true
+  swagger-ui:
+    path: "/swagger"
+
+location:
+  key:
+  trigger: false
+
