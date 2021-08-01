@@ -1,5 +1,7 @@
 package io.humourmind.todo;
 
+import java.net.URI;
+import java.util.Objects;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,90 +35,54 @@ import static org.springframework.web.servlet.function.ServerResponse.ok;
 @CrossOrigin()
 public class TodoApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(TodoApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(TodoApplication.class, args);
+	}
 
-  @Bean
-  RouterFunction<ServerResponse> staticResourceRouter() {
-    return RouterFunctions.resources("/**", new ClassPathResource("static/"))
-        .andRoute(
-            GET("/"),
-            req ->
-                ok().contentType(MediaType.TEXT_HTML)
-                    .body(new ClassPathResource("static/index.html")));
-  }
+	@Bean
+	RouterFunction<ServerResponse> staticResourceRouter() {
+		return RouterFunctions.resources("/**", new ClassPathResource("static/")).andRoute(GET("/"),
+				req -> ok().contentType(MediaType.TEXT_HTML).body(new ClassPathResource("static/index.html")));
+	}
 
-  @RouterOperations({
-    @RouterOperation(
-        path = "/todo",
-        beanClass = TodoService.class,
-        beanMethod = "findAllBySort",
-        method = RequestMethod.GET),
-    @RouterOperation(
-        path = "/todo/{id}",
-        beanClass = TodoService.class,
-        beanMethod = "findById",
-        method = RequestMethod.GET,
-        operation =
-            @Operation(
-                operationId = "findById",
-                parameters = {
-                  @Parameter(in = PATH, name = "id", description = "todo-id to find")
-                })),
-    @RouterOperation(
-        path = "/todo",
-        beanClass = TodoService.class,
-        beanMethod = "save",
-        method = {POST, PUT}),
-    @RouterOperation(
-        path = "/todo/{id}",
-        beanClass = TodoService.class,
-        beanMethod = "deleteById",
-        method = DELETE,
-        operation =
-            @Operation(
-                operationId = "deleteById",
-                parameters = {
-                  @Parameter(in = PATH, name = "id", description = "todo-id to delete")
-                }))
-  })
-  @Bean
-  RouterFunction<ServerResponse> routeHandler(
-      ITodoService todoService, FindLocationConfig locationConfig) {
-    return RouterFunctions.route()
-        .path(
-            "/todo",
-            builder ->
-                builder
-                    .GET(
-                        "/{id}",
-                        req ->
-                            ok().contentType(MediaType.APPLICATION_JSON)
-                                .body(
-                                    todoService
-                                        .findById(UUID.fromString(req.pathVariable("id")))
-                                        .get()))
-                    .POST(
-                        req ->
-                            created(null)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .body(todoService.save(req.body(Todo.class))))
-                    .PUT(
-                        req ->
-                            ok().contentType(MediaType.APPLICATION_JSON)
-                                .body(todoService.save(req.body(Todo.class))))
-                    .DELETE(
-                        "/{id}",
-                        req -> {
-                          todoService.deleteById(UUID.fromString(req.pathVariable("id")));
-                          return ok().build();
-                        })
-                    .GET(
-                        req ->
-                            ok().contentType(MediaType.APPLICATION_JSON)
-                                .body(
-                                    todoService.findAllBySort(Sort.by(Sort.Direction.DESC, "id")))))
-        .build();
-  }
+	@RouterOperations({
+			@RouterOperation(path = "/v1/todo", beanClass = TodoService.class, beanMethod = "findAllBySort",
+					method = RequestMethod.GET),
+			@RouterOperation(path = "/v1/todo/{id}", beanClass = TodoService.class, beanMethod = "findById",
+					method = RequestMethod.GET,
+					operation = @Operation(operationId = "findById",
+							parameters = { @Parameter(in = PATH, name = "id", description = "todo-id to find") })),
+			@RouterOperation(path = "/v1/todo", beanClass = TodoService.class, beanMethod = "save",
+					method = { POST, PUT }),
+			@RouterOperation(path = "/v1/todo/{id}", beanClass = TodoService.class, beanMethod = "deleteById",
+					method = DELETE,
+					operation = @Operation(operationId = "deleteById",
+							parameters = { @Parameter(in = PATH, name = "id", description = "todo-id to delete") })) })
+	@Bean
+	RouterFunction<ServerResponse> routeHandler(ITodoService todoService, FindLocationConfig locationConfig) {
+		return RouterFunctions.route()
+				.path("/v1/todo", builder -> builder
+						.GET("/{id}",
+								req -> ok().contentType(MediaType.APPLICATION_JSON)
+										.body(Objects.requireNonNull(todoService
+												.findById(UUID.fromString(req.pathVariable("id"))).orElse(null))))
+						.POST(req -> {
+							Todo todo = req.body(Todo.class);
+							todo.setGeoCode(locationConfig.getGeoCode());
+							return created(new URI("/v1/todo")).contentType(MediaType.APPLICATION_JSON)
+									.body(todoService.save(todo));
+						}).PUT(req -> ok().contentType(MediaType.APPLICATION_JSON)
+								.body(todoService.save(req.body(Todo.class))))
+						.DELETE("/{id}", req -> {
+							todoService.deleteById(UUID.fromString(req.pathVariable("id")));
+							return ok().build();
+						})
+						.GET("/page/{limit}",
+								req -> ok().contentType(MediaType.APPLICATION_JSON)
+										.body(todoService.findByLimit(Integer.parseInt(req.pathVariable("limit")))))
+						.GET(req -> ok().contentType(MediaType.APPLICATION_JSON)
+								.body(todoService.findAllBySort(Sort.by(Sort.Direction.DESC, "id")))))
+				.build();
+	}
+
 }

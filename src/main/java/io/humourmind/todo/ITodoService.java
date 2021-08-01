@@ -4,15 +4,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 public interface ITodoService {
 
-  List<Todo> findAllBySort(Sort sortOrder);
+	List<Todo> findAllBySort(Sort sortOrder);
 
-  Optional<Todo> findById(UUID id);
+	Page<Todo> findByLimit(int limit);
 
-  Todo save(Todo resource);
+	Optional<Todo> findById(UUID id);
 
-  void deleteById(UUID id);
+	Todo save(Todo resource);
+
+	void deleteById(UUID id);
+
 }

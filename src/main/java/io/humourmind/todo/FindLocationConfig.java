@@ -20,28 +20,32 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @AllArgsConstructor
 @NoArgsConstructor
 public final class FindLocationConfig {
-  private static final String DEFAULT_CODE = "AS";
-  private boolean trigger;
-  private String key;
 
-  public String getGeoCode() {
-    if (trigger) {
-      try {
-        URL url = new URL("https://api.ipdata.co");
-        IpdataModel model = Ipdata.builder().url(url).key(key).get().ipdata(getPublicIP());
-        return model.continentCode();
-      } catch (Exception remoteEx) {
-        // do nothing
-      }
-    }
-    return DEFAULT_CODE;
-  }
+	private static final String DEFAULT_CODE = "AS";
 
-  private String getPublicIP() throws IOException {
-    try (BufferedReader br =
-        new BufferedReader(
-            new InputStreamReader(new URL("http://checkip.amazonaws.com").openStream()))) {
-      return br.readLine();
-    }
-  }
+	private boolean trigger;
+
+	private String key;
+
+	public String getGeoCode() {
+		if (trigger) {
+			try {
+				URL url = new URL("https://api.ipdata.co");
+				IpdataModel model = Ipdata.builder().url(url).key(key).get().ipdata(getPublicIP());
+				return model.continentCode();
+			}
+			catch (Exception remoteEx) {
+				// do nothing
+			}
+		}
+		return DEFAULT_CODE;
+	}
+
+	private String getPublicIP() throws IOException {
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(new URL("http://checkip.amazonaws.com").openStream()))) {
+			return br.readLine();
+		}
+	}
+
 }

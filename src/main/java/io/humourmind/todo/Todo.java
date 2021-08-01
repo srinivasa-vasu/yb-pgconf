@@ -21,18 +21,17 @@ import org.hibernate.annotations.Type;
 @Data
 public class Todo {
 
-  @Id
-  @Column(
-      updatable = false,
-      nullable = false,
-      columnDefinition = "uuid DEFAULT uuid_generate_v4()",
-      name = "id")
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  @Type(type = "pg-uuid")
-  private UUID id;
+	@Id
+	@Column(updatable = false, nullable = false, columnDefinition = "uuid DEFAULT uuid_generate_v4()", name = "id")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@Type(type = "pg-uuid")
+	private UUID id;
 
-  private String task;
-  private String geoCode;
-  private boolean status;
+	private String task;
+
+	private String geoCode;
+
+	private boolean status;
+
 }
