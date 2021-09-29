@@ -1,5 +1,7 @@
 package io.humourmind.todo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +22,13 @@ public class TodoService implements ITodoService {
 
 	@Override
 	public List<Todo> findAllBySort(Sort sortOrder) {
-		return todoRepository.findAll(sortOrder);
+		List<Todo> todoList = Collections.emptyList();
+		Iterable<Todo> listIterable = todoRepository.findAll(sortOrder);
+		if (listIterable.iterator().hasNext()) {
+			todoList = new ArrayList<>();
+			listIterable.forEach(todoList::add);
+		}
+		return todoList;
 	}
 
 	@Override

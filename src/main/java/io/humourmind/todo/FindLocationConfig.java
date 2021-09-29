@@ -19,7 +19,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public final class FindLocationConfig {
+public class FindLocationConfig {
 
 	private static final String DEFAULT_CODE = "AS";
 

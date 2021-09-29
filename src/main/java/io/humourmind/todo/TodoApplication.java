@@ -4,6 +4,10 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
+import com.yugabyte.ysql.YBClusterAwareDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springdoc.core.annotations.RouterOperation;
@@ -11,6 +15,7 @@ import org.springdoc.core.annotations.RouterOperations;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
@@ -37,6 +42,21 @@ public class TodoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TodoApplication.class, args);
+	}
+
+	//@Bean
+	public DataSource ybDataSource(DataSourceProperties properties) {
+		YBClusterAwareDataSource wrappedDataSource = (YBClusterAwareDataSource) properties.initializeDataSourceBuilder()
+				.type(YBClusterAwareDataSource.class).build();
+		wrappedDataSource.setLoadBalanceHosts(true);
+		// wrappedDataSource.setReWriteBatchedInserts(true);
+		wrappedDataSource.setLoadBalance("true");
+		wrappedDataSource.setAdditionalEndpoints("127.0.0.4:5433");
+		HikariDataSource hikariDataSource = new HikariDataSource();
+		hikariDataSource.setDataSource(wrappedDataSource);
+		hikariDataSource.setConnectionTestQuery("SELECT 1");
+		// hikariDataSource.setMaximumPoolSize(120);
+		return hikariDataSource;
 	}
 
 	@Bean

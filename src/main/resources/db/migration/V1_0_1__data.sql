@@ -1,1 +1,1 @@
---INSERT INTO todo(id, task, country_code, status) VALUES (uuid_generate_v4(), 'My first todo', 'IN', true);
+INSERT INTO todo(id, task, geo_code, status) VALUES (uuid_generate_v4(), 'My first todo', 'IN', true);

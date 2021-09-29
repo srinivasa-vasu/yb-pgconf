@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "2.5.3"
+    id("org.springframework.boot") version "2.5.5"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("java")
 }
@@ -16,6 +16,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -27,13 +28,18 @@ dependencies {
     implementation("co.ipdata.client:ipdata-java-client:0.2.0") {
         exclude(group = "org.slf4j")
     }
+    implementation("com.yugabyte:spring-data-yugabytedb-ysql:2.3.0")
+
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    annotationProcessor("org.projectlombok:lombok")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-    runtimeOnly("org.postgresql:postgresql")
-    annotationProcessor("org.projectlombok:lombok")
+    runtimeOnly("com.yugabyte:jdbc-yugabytedb:42.2.7-yb-5-beta.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("com.yugabyte:testcontainers-yugabytedb:1.0.0-beta-3")
+    testImplementation("org.testcontainers:junit-jupiter:1.15.3")
 }
 
 

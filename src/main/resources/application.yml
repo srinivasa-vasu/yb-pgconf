@@ -12,8 +12,16 @@ spring:
     mixed: true
   jpa:
     show-sql: true
+    properties:
+      hibernate:
+        order_inserts: true
+        order_updates: true
+        generate_statistics: true
+        jdbc:
+          batch_size: 50
+
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5433/todo
+    url: jdbc:postgresql://127.0.0.2:5433/todo
     username: todo
     password: todo
 
