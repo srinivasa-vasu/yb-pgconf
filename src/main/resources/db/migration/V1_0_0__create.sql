@@ -9,14 +9,14 @@ CREATE TABLE IF NOT EXISTS todo
     created_at   timestamp default now()
 );
 
-CREATE SEQUENCE IF NOT EXISTS todo_s_id_seq START 1 INCREMENT BY 10;
+CREATE SEQUENCE IF NOT EXISTS todo_s_id_seq START 1 INCREMENT BY 1;
 
 CREATE TABLE IF NOT EXISTS todo_s
 (
-    id           integer NOT NULL DEFAULT nextval('todo_s_id_seq') PRIMARY KEY,
+    id           integer DEFAULT nextval('todo_s_id_seq') PRIMARY KEY,
     task         text,
     status       boolean,
-    created_at   timestamp NOT NULL default now()
+    created_at   timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS todo_i
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS todo_i
 CREATE TABLE todo_ip
 (
     id           serial,
-    created_at   timestamp NOT NULL default now(),
+    created_at   timestamp NOT NULL DEFAULT now(),
     task         text,
     status       boolean,
     PRIMARY KEY (id, created_at)
@@ -46,7 +46,7 @@ CREATE SEQUENCE IF NOT EXISTS todo_sp_id_seq START 1;
 CREATE TABLE todo_sp
 (
     id           integer NOT NULL DEFAULT nextval('todo_sp_id_seq'),
-    created_at   timestamp NOT NULL default now(),
+    created_at   timestamp NOT NULL DEFAULT now(),
     task         text,
     status       boolean,
     PRIMARY KEY (id, created_at)
