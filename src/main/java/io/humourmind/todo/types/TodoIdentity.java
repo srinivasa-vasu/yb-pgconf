@@ -1,10 +1,12 @@
-package io.humourmind.todo.tips;
+package io.humourmind.todo.types;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +25,7 @@ public class TodoIdentity {
 
 	private String task;
 
-	private String geoCode;
+	private LocalDateTime created_at = LocalDateTime.now();
 
 	private boolean status;
 

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import com.yugabyte.ysql.YBClusterAwareDataSource;
+//import com.yugabyte.ysql.YBClusterAwareDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.function.RouterFunction;
@@ -44,17 +45,19 @@ public class TodoApplication {
 		SpringApplication.run(TodoApplication.class, args);
 	}
 
-	//@Bean
+	@Bean
 	public DataSource ybDataSource(DataSourceProperties properties) {
-		YBClusterAwareDataSource wrappedDataSource = (YBClusterAwareDataSource) properties.initializeDataSourceBuilder()
-				.type(YBClusterAwareDataSource.class).build();
-		wrappedDataSource.setLoadBalanceHosts(true);
-		// wrappedDataSource.setReWriteBatchedInserts(true);
-		wrappedDataSource.setLoadBalance("true");
-		wrappedDataSource.setAdditionalEndpoints("127.0.0.4:5433");
+		DriverManagerDataSource wrappedDataSource = (DriverManagerDataSource) properties.initializeDataSourceBuilder()
+				.type(DriverManagerDataSource.class).build();
+		// wrappedDataSource.setLoadBalanceHosts(true);
+		// wrappedDataSource.setPrepareThreshold(1);
+//		wrappedDataSource.setReWriteBatchedInserts(true);
+//		wrappedDataSource.setLoadBalance("true");
+//		wrappedDataSource.setAdditionalEndpoints("127.0.0.4:5433");
 		HikariDataSource hikariDataSource = new HikariDataSource();
 		hikariDataSource.setDataSource(wrappedDataSource);
 		hikariDataSource.setConnectionTestQuery("SELECT 1");
+		hikariDataSource.setMinimumIdle(1);
 		// hikariDataSource.setMaximumPoolSize(120);
 		return hikariDataSource;
 	}
@@ -88,7 +91,6 @@ public class TodoApplication {
 												.findById(UUID.fromString(req.pathVariable("id"))).orElse(null))))
 						.POST(req -> {
 							Todo todo = req.body(Todo.class);
-							todo.setGeoCode(locationConfig.getGeoCode());
 							return created(new URI("/v1/todo")).contentType(MediaType.APPLICATION_JSON)
 									.body(todoService.save(todo));
 						}).PUT(req -> ok().contentType(MediaType.APPLICATION_JSON)

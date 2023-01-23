@@ -1,12 +1,12 @@
 package io.humourmind.todo;
 
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
+import jakarta.persistence.EntityManager;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.YugabyteYSQLContainer;
+import org.testcontainers.containers.YugabyteDBYSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ class TodoRepositoryTest {
 	private ITodoRepository todoRepository;
 
 	@ClassRule
-	public static YugabyteYSQLContainer container = new YugabyteYSQLContainer("yugabytedb/yugabyte:2.7.2.0-b216")
+	public static YugabyteDBYSQLContainer container = new YugabyteDBYSQLContainer("yugabytedb/yugabyte:2.14.4.0-b26")
 			.withDatabaseName("yugabyte").withUsername("yugabyte").withPassword("yugabyte");
 
 	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

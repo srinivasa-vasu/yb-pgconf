@@ -1,12 +1,13 @@
 package io.humourmind.todo;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,13 +26,13 @@ public class Todo {
 	@Column(updatable = false, nullable = false, columnDefinition = "uuid DEFAULT uuid_generate_v4()", name = "id")
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@Type(type = "pg-uuid")
+//	@Type(value = "pg-uuid")
 	private UUID id;
 
 	private String task;
 
-	private String geoCode;
-
 	private boolean status;
+
+	private LocalDateTime created_at;
 
 }
