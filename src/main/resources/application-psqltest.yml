@@ -1,0 +1,9 @@
+spring:
+  flyway:
+    clean-disabled: false
+    clean-on-validation-error: true
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/todo
+#    url: jdbc:postgresql://127.0.0.1:5432/todo?reWriteBatchedInserts=true
+    username: postgres
+    password: postgres

@@ -24,7 +24,8 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @ContextConfiguration(classes = { TodoTestRunner.Config.class })
 @AutoConfigureTestDatabase(replace = NONE)
 // @Testcontainers
-@ActiveProfiles("test")
+@ActiveProfiles("psqltest")
+@Rollback(false)
 public class TodoTestRunner {
 
 	@Configuration
@@ -39,13 +40,11 @@ public class TodoTestRunner {
 	private EntityManager entityManager;
 
 	@Test
-	@Rollback(false)
 	void singleIdentityFlow() {
 		entityManager.persist(new TodoIdentity());
 	}
 
 	@Test
-	@Rollback(false)
 	void groupIdentityFlow() {
 		for (int i = 0; i < 10; i++) {
 			entityManager.persist(new TodoIdentity());
@@ -53,19 +52,29 @@ public class TodoTestRunner {
 	}
 
 	@Test
-	@Rollback(false)
 	void partitionIdentityFlow() {
 		entityManager.persist(new TodoCompositeIdentity());
 	}
 
 	@Test
-	@Rollback(false)
 	void singleSequenceFlow() {
 		entityManager.persist(new TodoSequence());
 	}
 
 	@Test
-	@Rollback(false)
+	void nativeSequenceFlow() {
+		String query = "explain analyze insert into todo_s(id, task, status) values(nextval('todo_sc_id_seq'), 'test', false)";
+		String seq = "select currval('todo_sc_id_seq')";
+		for (int i = 0; i < 110; i++) {
+			System.out.println("---------------------------------------\n");
+			entityManager.createNativeQuery(query).getResultStream().forEach(System.out::println);
+			System.out.println("Sequence Id:" + entityManager.createNativeQuery(seq).getSingleResult().toString());
+			System.out.println("---------------------------------------\n");
+		}
+	}
+
+
+	@Test
 	void groupSequenceFlow() {
 		for (int i = 0; i < 10; i++) {
 			entityManager.persist(new TodoSequence());
@@ -73,13 +82,11 @@ public class TodoTestRunner {
 	}
 
 	@Test
-	@Rollback(false)
 	void partitionSequenceFlow() {
 		entityManager.persist(new TodoCompositeSequence());
 	}
 
 	@Test
-	@Rollback(false)
 	void partitionGroupSequenceFlow() {
 		for (int i = 0; i < 10; i++) {
 			entityManager.persist(new TodoCompositeSequence());

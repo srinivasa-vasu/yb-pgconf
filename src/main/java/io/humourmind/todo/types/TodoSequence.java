@@ -22,7 +22,7 @@ public class TodoSequence {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "todo_s_id_seq")
-	@SequenceGenerator(name = "todo_s_id_seq", sequenceName = "todo_s_id_seq", allocationSize = 10)
+	@SequenceGenerator(name = "todo_s_id_seq", sequenceName = "todo_s_id_seq", allocationSize = 1)
 	private Long id;
 
 	private String task;
