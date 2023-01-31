@@ -1,6 +1,23 @@
 -- DROP TABLE IF EXISTS todo;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+create function nextval(name text) returns bigint as $$
+declare
+    prefix text;
+    buckets int;
+    sequence regclass;
+begin
+    prefix :=   regexp_replace(name,'^(.*)%([0-9]+)$','\1');
+    if prefix = name then
+        sequence:=name::regclass;
+    else
+        buckets := regexp_replace(name,'^(.*)%([0-9]+)$','\2');
+        sequence:=(prefix||(pg_backend_pid()%buckets)::text)::regclass;
+    end if;
+    return pg_catalog.nextval(sequence);
+end;
+$$ language plpgsql;
+
 CREATE TABLE IF NOT EXISTS todo
 (
     id           uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -9,7 +26,7 @@ CREATE TABLE IF NOT EXISTS todo
     created_at   timestamp default now()
 );
 
-CREATE SEQUENCE IF NOT EXISTS todo_s_id_seq START 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS todo_s_id_seq START 1 INCREMENT BY 10;
 
 CREATE SEQUENCE IF NOT EXISTS todo_sc_id_seq START 1 INCREMENT BY 1 CACHE 100;
 
@@ -29,6 +46,20 @@ CREATE TABLE IF NOT EXISTS todo_i
     status       boolean,
     created_at   timestamp NOT NULL default now()
 );
+
+-- scalable sequence
+CREATE TABLE IF NOT EXISTS todo_scale
+(
+    id           integer DEFAULT nextval('seq%4') PRIMARY KEY,
+    task         text,
+    status       boolean,
+    created_at   timestamp NOT NULL DEFAULT now()
+);
+
+create sequence if not exists seq0 minvalue 0 start with 0 cache 100 increment by 4;
+create sequence if not exists seq1 minvalue 1 start with 1 cache 100 increment by 4;
+create sequence if not exists seq2 minvalue 2 start with 2 cache 100 increment by 4;
+create sequence if not exists seq3 minvalue 3 start with 3 cache 100 increment by 4;
 
 -- partitioned table flow
 

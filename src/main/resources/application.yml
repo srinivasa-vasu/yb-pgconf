@@ -14,11 +14,15 @@ spring:
     show-sql: true
     properties:
       hibernate:
+#        id:
+#          optimizer:
+#            pooled:
+#              preferred: pooled-lo
         order_inserts: true
         order_updates: true
         generate_statistics: true
-#        jdbc:
-#          batch_size: 50
+        jdbc:
+          batch_size: 10
 #        show_sql: true
 #        format_sql: true
 #        query:

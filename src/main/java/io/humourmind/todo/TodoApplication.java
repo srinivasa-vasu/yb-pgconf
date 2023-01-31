@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.persistence.SequenceGenerator;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 
@@ -49,16 +51,10 @@ public class TodoApplication {
 	public DataSource ybDataSource(DataSourceProperties properties) {
 		DriverManagerDataSource wrappedDataSource = (DriverManagerDataSource) properties.initializeDataSourceBuilder()
 				.type(DriverManagerDataSource.class).build();
-		// wrappedDataSource.setLoadBalanceHosts(true);
-		// wrappedDataSource.setPrepareThreshold(1);
-//		wrappedDataSource.setReWriteBatchedInserts(true);
-//		wrappedDataSource.setLoadBalance("true");
-//		wrappedDataSource.setAdditionalEndpoints("127.0.0.4:5433");
 		HikariDataSource hikariDataSource = new HikariDataSource();
 		hikariDataSource.setDataSource(wrappedDataSource);
 		hikariDataSource.setConnectionTestQuery("SELECT 1");
 		hikariDataSource.setMinimumIdle(1);
-		// hikariDataSource.setMaximumPoolSize(120);
 		return hikariDataSource;
 	}
 
