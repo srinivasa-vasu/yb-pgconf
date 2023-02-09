@@ -21,8 +21,8 @@ spring:
         order_inserts: true
         order_updates: true
         generate_statistics: true
-        jdbc:
-          batch_size: 10
+#        jdbc:
+#          batch_size: 10
 #        show_sql: true
 #        format_sql: true
 #        query:
@@ -31,6 +31,9 @@ spring:
     url: jdbc:postgresql://127.0.0.1:5432/todo
     username: postgres
     password: postgres
+#    hikari:
+#      minimum-idle: 10
+#      maximum-pool-size: 10
 
 springdoc:
   api-docs:
