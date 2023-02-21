@@ -25,6 +25,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @AutoConfigureTestDatabase(replace = NONE)
 // @Testcontainers
 @ActiveProfiles("psqltest")
+// @ActiveProfiles("ysqltest")
 @Rollback(false)
 public class TodoTestRunner {
 
@@ -64,13 +65,7 @@ public class TodoTestRunner {
 	@Test
 	void nativeSequenceFlow() {
 		String query = "explain analyze insert into todo_s(id, task, status) values(nextval('todo_sc_id_seq'), 'test', false)";
-		String seq = "select currval('todo_sc_id_seq')";
-		for (int i = 0; i < 110; i++) {
-			System.out.println("---------------------------------------\n");
-			entityManager.createNativeQuery(query).getResultStream().forEach(System.out::println);
-			System.out.println("Sequence Id:" + entityManager.createNativeQuery(seq).getSingleResult().toString());
-			System.out.println("---------------------------------------\n");
-		}
+		nativeExecution(query, 105);
 	}
 
 	@Test
@@ -90,6 +85,34 @@ public class TodoTestRunner {
 		for (int i = 0; i < 10; i++) {
 			entityManager.persist(new TodoCompositeSequence());
 		}
+	}
+
+	@Test
+	void singleUUIDFlow() {
+		entityManager.persist(new Todo());
+	}
+
+	@Test
+	void groupUUIDFlow() {
+		for (int i = 0; i < 10; i++) {
+			entityManager.persist(new Todo());
+		}
+	}
+
+	@Test
+	void nativeUUIDFlow() {
+		String query = "explain analyze insert into todo(task, status) values('test', false)";
+		nativeExecution(query, 50);
+	}
+
+	void nativeExecution(String query, int count) {
+		for (int i = 1; i <= count; i++) {
+			System.out.println("---------------------------------------\n");
+			entityManager.createNativeQuery(query).getResultStream().forEach(System.out::println);
+			System.out.println("Iteration Id:" + i);
+			System.out.println("---------------------------------------\n");
+		}
+
 	}
 
 }
