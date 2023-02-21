@@ -61,9 +61,8 @@ dependencyManagement {
 }
 
 tasks.withType<Test> {
+    onlyIf { project.hasProperty("runTest") }
     useJUnitPlatform()
-    onlyIf { !project.hasProperty("runTest") }
-
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
