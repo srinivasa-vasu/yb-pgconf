@@ -20,7 +20,7 @@ tasks:
       ysqlsh
   - name: 2a-install-postgres
     init: |
-      sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+      sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $lsb_release -cs-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
       wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
       sudo apt -y update
       sudo apt -y install postgresql-14 postgresql-contrib-14
@@ -37,16 +37,16 @@ tasks:
       gp sync-done jvm-17
   - name: 3b-gradle-test
     env:
-      SI: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.singleIdentityFlow")
-      SS: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.singleSequenceFlow")
-      GI: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.groupIdentityFlow")
-      GS: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.groupSequenceFlow")
-      PS: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.partitionSequenceFlow")
-      PGS: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.partitionGroupSequenceFlow")
-      SU: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.singleUUIDFlow")
-      GU: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.groupUUIDFlow")
-      NS: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.nativeSequenceFlow")
-      NU: (gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.nativeUUIDFlow")
+      SI: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.singleIdentityFlow"
+      SS: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.singleSequenceFlow"
+      GI: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.groupIdentityFlow"
+      GS: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.groupSequenceFlow"
+      PS: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.partitionSequenceFlow"
+      PGS: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.partitionGroupSequenceFlow"
+      SU: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.singleUUIDFlow"
+      GU: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.groupUUIDFlow"
+      NS: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.nativeSequenceFlow"
+      NU: gradle -PrunTest --rerun-tasks -i test --tests "io.humourmind.todo.TodoRunnerTest.nativeUUIDFlow"
     init: |
       gp sync-await jvm-17
       gradle test
