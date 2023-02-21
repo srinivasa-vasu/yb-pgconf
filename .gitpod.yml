@@ -26,8 +26,6 @@ tasks:
       sudo apt -y install postgresql-14 postgresql-contrib-14
     command: |
       sudo su postgres -c "pg_ctlcluster 14 main start"
-#      sudo su postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD 'postgres';\""
-#      sudo su postgres -c "psql -c \"CREATE DATABASE todo;\""
   - name: 2b-psql
     command: |
       gp ports await 5432
