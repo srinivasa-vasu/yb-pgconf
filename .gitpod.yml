@@ -20,7 +20,10 @@ tasks:
       ysqlsh
   - name: 2a-install-postgres
     init:
-      sudo install-packages postgresql-14 postgresql-contrib-14
+      sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+      wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+      sudo apt -y update
+      sudo apt -y install postgresql-14 postgresql-contrib-14
     command: |
       sudo su postgres -c "pg_ctlcluster 14 main start"
 #      sudo su postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD 'postgres';\""
@@ -36,18 +39,18 @@ tasks:
       gp sync-done jvm-17
   - name: 3b-gradle-test
     env:
-      SI: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.singleIdentityFlow\" --rerun-tasks -i --offline"
-      SS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.singleSequenceFlow\" --rerun-tasks -i --offline"
-      GI: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.groupIdentityFlow\" --rerun-tasks -i --offline"
-      GS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.groupSequenceFlow\" --rerun-tasks -i --offline"
-      PS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.partitionSequenceFlow\" --rerun-tasks -i --offline"
-      PGS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.partitionGroupSequenceFlow\" --rerun-tasks -i --offline"
-      SU: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.singleUUIDFlow\" --rerun-tasks -i --offline"
-      GU: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.groupUUIDFlow\" --rerun-tasks -i --offline"
-      NS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.nativeSequenceFlow\" --rerun-tasks -i --offline"
-      NU: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.nativeUUIDFlow\" --rerun-tasks -i --offline"
+      SI: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.singleIdentityFlow\""
+      SS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.singleSequenceFlow\""
+      GI: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.groupIdentityFlow\""
+      GS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.groupSequenceFlow\""
+      PS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.partitionSequenceFlow\""
+      PGS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.partitionGroupSequenceFlow\""
+      SU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.singleUUIDFlow\""
+      GU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.groupUUIDFlow\""
+      NS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.nativeSequenceFlow\""
+      NU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.nativeUUIDFlow\""
     init: |
       gp sync-await jvm-17
-      gradle assemble
+      gradle compileTestJava
     command: |
       bash
