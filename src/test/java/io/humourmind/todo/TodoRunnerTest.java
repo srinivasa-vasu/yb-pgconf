@@ -21,13 +21,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 @DataJpaTest
-@ContextConfiguration(classes = { TodoTestRunner.Config.class })
+@ContextConfiguration(classes = { TodoRunnerTest.Config.class })
 @AutoConfigureTestDatabase(replace = NONE)
 // @Testcontainers
-//@ActiveProfiles("psqltest")
- @ActiveProfiles("ysqltest")
+// @ActiveProfiles("psqltest")
+@ActiveProfiles("ysqltest")
 @Rollback(false)
-public class TodoTestRunner {
+public class TodoRunnerTest {
 
 	@Configuration
 	@EnableTransactionManagement
@@ -105,6 +105,7 @@ public class TodoTestRunner {
 		nativeExecution(query, 50);
 	}
 
+	@SuppressWarnings("unchecked")
 	void nativeExecution(String query, int count) {
 		for (int i = 1; i <= count; i++) {
 			System.out.println("---------------------------------------\n");

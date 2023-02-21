@@ -37,16 +37,16 @@ tasks:
       gp sync-done jvm-17
   - name: 3b-gradle-test
     env:
-      SI: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.singleIdentityFlow\""
-      SS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.singleSequenceFlow\""
-      GI: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.groupIdentityFlow\""
-      GS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.groupSequenceFlow\""
-      PS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.partitionSequenceFlow\""
-      PGS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.partitionGroupSequenceFlow\""
-      SU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.singleUUIDFlow\""
-      GU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.groupUUIDFlow\""
-      NS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.nativeSequenceFlow\""
-      NU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoTestRunner.nativeUUIDFlow\""
+      SI: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.singleIdentityFlow\""
+      SS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.singleSequenceFlow\""
+      GI: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.groupIdentityFlow\""
+      GS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.groupSequenceFlow\""
+      PS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.partitionSequenceFlow\""
+      PGS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.partitionGroupSequenceFlow\""
+      SU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.singleUUIDFlow\""
+      GU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.groupUUIDFlow\""
+      NS: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.nativeSequenceFlow\""
+      NU: "gradle --rerun-tasks -i --offline test --tests \"io.humourmind.todo.TodoRunnerTest.nativeUUIDFlow\""
     init: |
       gp sync-await jvm-17
       gradle compileTestJava
