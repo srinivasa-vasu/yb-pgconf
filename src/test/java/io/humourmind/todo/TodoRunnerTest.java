@@ -24,8 +24,8 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @ContextConfiguration(classes = { TodoRunnerTest.Config.class })
 @AutoConfigureTestDatabase(replace = NONE)
 // @Testcontainers
-// @ActiveProfiles("psqltest")
-@ActiveProfiles("ysqltest")
+@ActiveProfiles("psqltest")
+//@ActiveProfiles("ysqltest")
 @Rollback(false)
 public class TodoRunnerTest {
 

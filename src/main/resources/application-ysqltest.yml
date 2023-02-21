@@ -3,7 +3,7 @@ spring:
     clean-disabled: false
     clean-on-validation-error: true
   datasource:
-    url: jdbc:yugabytedb://local.yb:5433/todo
+    url: jdbc:yugabytedb://127.0.0.1:5433/todo
 #    url: jdbc:yugabytedb://127.0.0.2:5433/todo?reWriteBatchedInserts=true
     username: yugabyte
     password: yugabyte
