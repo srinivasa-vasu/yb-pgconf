@@ -1,0 +1,53 @@
+image: gitpod/workspace-yugabytedb
+
+github:
+  prebuilds:
+    branches: true
+    master: true
+    main: true
+
+tasks:
+  - name: 1a-ybdb
+    env:
+      HOST_LB: "127.0.0.1"
+    command: |
+      mkdir -p ${GITPOD_REPO_ROOT}/ybdb
+      yugabyted start --base_dir=${GITPOD_REPO_ROOT}/ybdb --advertise_address=$HOST_LB
+  - name: 1b-ysqlsh
+    command: |
+      gp ports await 5433
+      ysqlsh -f src/main/resources/init/post-create.sql
+      ysqlsh
+  - name: 2a-install-postgres
+    init:
+      sudo install-packages postgresql-14 postgresql-contrib-14
+    command: |
+      sudo su postgres -c "pg_ctlcluster 14 main start"
+#      sudo su postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD 'postgres';\""
+#      sudo su postgres -c "psql -c \"CREATE DATABASE todo;\""
+  - name: 2b-psql
+    command: |
+      gp ports await 5432
+      sudo su postgres -c "psql -f src/main/resources/init/post-create.sql"
+      sudo su postgres -c "psql"
+  - name: 3a-jvm-install
+    init: |
+      echo y | sdk install java 17.0.5-librca || true
+      gp sync-done jvm-17
+  - name: 3b-gradle-test
+    env:
+      SI: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.singleIdentityFlow\" --rerun-tasks -i --offline"
+      SS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.singleSequenceFlow\" --rerun-tasks -i --offline"
+      GI: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.groupIdentityFlow\" --rerun-tasks -i --offline"
+      GS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.groupSequenceFlow\" --rerun-tasks -i --offline"
+      PS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.partitionSequenceFlow\" --rerun-tasks -i --offline"
+      PGS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.partitionGroupSequenceFlow\" --rerun-tasks -i --offline"
+      SU: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.singleUUIDFlow\" --rerun-tasks -i --offline"
+      GU: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.groupUUIDFlow\" --rerun-tasks -i --offline"
+      NS: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.nativeSequenceFlow\" --rerun-tasks -i --offline"
+      NU: "gradle test --tests \"io.humourmind.todo.TodoTestRunner.nativeUUIDFlow\" --rerun-tasks -i --offline"
+    init: |
+      gp sync-await jvm-17
+      gradle assemble
+    command: |
+      bash
